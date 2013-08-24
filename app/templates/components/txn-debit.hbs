@@ -9,7 +9,9 @@
 			</div>
 			<div class="span8 border-adjust buttons">
 				<div class="buttons-container">
-					{{refund-debit-modal debit=debit}}
+					{{#unless debit.refunded}}
+						{{refund-debit-modal debit=debit}}
+					{{/unless}}
 				</div>
 			</div>
 		</div>

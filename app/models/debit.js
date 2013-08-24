@@ -3,6 +3,10 @@ Balanced.Debit = Balanced.Transaction.extend({
     hold: Balanced.Model.belongsTo('hold', 'Balanced.Hold'),
     refunds: Balanced.Model.hasMany('refunds', 'Balanced.Refund'),
 
+    refunded: function() {
+        return this.get('refunds');
+    }.property('refunds'),
+
     type_name: function () {
         return "Debit";
     }.property(),
