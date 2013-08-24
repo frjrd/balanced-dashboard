@@ -37,6 +37,9 @@
     width: @wideModalWidth;
     margin-left: -@wideModalWidth / 2;
   }
+  max-height: 100%;
+  overflow: hidden;
+  overflow-y: scroll;
   background-color: @modalBackgroundColor;
   border: @modalBorderWidth solid;
   border: @modalBorderWidth solid;
@@ -60,8 +63,8 @@
   background-color: @modalBorderColor;
   // Close icon
   .close {
-    right: -5px;
-    top: -5px;
+    right: 5px;
+    top: 5px;
   }
   // Heading
   h2 {
