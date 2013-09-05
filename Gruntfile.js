@@ -60,15 +60,15 @@ module.exports = function (grunt) {
                     'static/lib/jquery-2.0.0.js',
                     'static/lib/handlebars-1.0.0.js',
                     'static/lib/ember-1.0.0-rc.7.js',
-                    'static/lib/ember-auth-6.0.5-modified.js',
+                    'static/lib/ember-auth-7.1.3.js',
                     'static/lib/ember-validations.prod.js',
                     'static/lib/bootstrap/bootstrap-dropdown.js',
                     'static/lib/bootstrap/bootstrap-modal.js',
+                    'static/lib/bootstrap/bootstrap-modalmanager.js',
                     'static/lib/bootstrap/bootstrap-tooltip.js',
                     'static/lib/bootstrap/bootstrap-popover.js',
                     'static/lib/bootstrap-datepicker.js',
                     'static/lib/jquery.browser.js',
-                    'static/lib/jquery.iframe-auto-height.plugin.1.9.1.js',
                     'static/lib/underscore-1.4.4.js',
                     'static/lib/mixpanel-2.2.js',
                     'static/lib/google_prettify.js'
@@ -80,15 +80,15 @@ module.exports = function (grunt) {
                     'static/lib/jquery-2.0.0.js',
                     'static/lib/handlebars-1.0.0.js',
                     'static/lib/ember-1.0.0-rc.7.js',
-                    'static/lib/ember-auth-6.0.5-modified.js',
+                    'static/lib/ember-auth-7.1.3.js',
                     'static/lib/ember-validations.prod.js',
                     'static/lib/bootstrap/bootstrap-dropdown.js',
                     'static/lib/bootstrap/bootstrap-modal.js',
+                    'static/lib/bootstrap/bootstrap-modalmanager.js',
                     'static/lib/bootstrap/bootstrap-tooltip.js',
                     'static/lib/bootstrap/bootstrap-popover.js',
                     'static/lib/bootstrap-datepicker.js',
                     'static/lib/jquery.browser.js',
-                    'static/lib/jquery.iframe-auto-height.plugin.1.9.1.js',
                     'static/lib/underscore-1.4.4.js',
                     'static/lib/mixpanel-2.2.js',
                     'static/lib/google_prettify.js'
@@ -250,6 +250,10 @@ module.exports = function (grunt) {
                         dest: 'build/test/js/testconfig.js'
                     },
                     {
+                        src: 'test/support/testenv.js',
+                        dest: 'build/test/js/testenv.js'
+                    },
+                    {
                         src: 'test/support/fixturebrowserconfig.js',
                         dest: 'build/test/js/fixturebrowserconfig.js'
                     }
@@ -285,6 +289,7 @@ module.exports = function (grunt) {
                     cssFile: "css/base.css",
                     jsLibFile: "js/lib-dev.js",
                     jsDashboardFile: "js/dashboard-dev.js",
+                    includeLiveReload: true,
                     env: "{\
                         BALANCED: {\
                             API: 'https://auth.balancedpayments.com',\
@@ -305,6 +310,7 @@ module.exports = function (grunt) {
                     cssFile: "css/base.min.css",
                     jsLibFile: "js/lib-prod.min.js",
                     jsDashboardFile: "js/dashboard-prod.min.js",
+                    includeLiveReload: false,
                     env: "{\
                         BALANCED: {\
                             API: 'https://auth.balancedpayments.com',\
@@ -419,35 +425,12 @@ module.exports = function (grunt) {
             }
         },
 
-        qunit: {
-            options: {
-                '--web-security': 'no',
-                timeout: 60000,
-                coverage: {
-                    src: ['build/js/dashboard-prod.js'],
-                    instrumentedFiles: 'temp/',
-                    htmlReport: 'report/coverage',
-                    coberturaReport: 'report/',
-                    linesThresholdPct: 84,
-                    statementsThresholdPct: 82,
-                    functionsThresholdPct: 76,
-                    branchesThresholdPct: 56
-                }
-            },
-            all: ['build/test/runner.html']
-        },
-
-        exec: {
-            // We're not using this currently, but leaving it in here in case
-            // somebody wants to run tests using their installed phantomJS
-            run_tests: {
-                command: 'phantomjs test/support/lib/run-qunit.js build/test/runner.html'
+        karma: {
+            unit: {
+                configFile: 'karma.conf.js'
             }
         },
 
-        /*
-         * A test server used for casperjs tests
-         * */
         connect: {
             server: {
                 options: {
@@ -457,52 +440,69 @@ module.exports = function (grunt) {
             }
         },
 
-        casperjs: {
-            options: {
-                // Task-specific options go here.
-            },
-            files: ['test/casperjs/**/*.js']
-        },
-
         watch: {
             templates: {
                 files: [
                     'app/**/*.hbs'
                 ],
-                tasks: ['_buildJS']
+                tasks: ['_buildJS'],
+                options: {
+                    livereload: true,
+                }
             },
             js: {
                 files: [
                     'app/**/*.js',
                     'static/lib/**/*.js'
                 ],
-                tasks: ['_buildJSAfterTemplates']
+                tasks: ['_buildJSAfterTemplates'],
+                options: {
+                    livereload: true,
+                }
             },
             tests: {
                 files: [
                     'test/support/**/*',
                     'test/**/*.js'
                 ],
-                tasks: ['_buildTests']
+                tasks: ['_buildTests'],
+                options: {
+                    livereload: true,
+                }
             },
             css: {
                 files: [
                     'static/less/*'
                 ],
-                tasks: ['_buildCSS']
+                tasks: ['_buildCSS'],
+                options: {
+                    livereload: true,
+                }
             },
             images: {
                 files: [
                     'static/images/**/*'
                 ],
-                tasks: ['_buildImages']
+                tasks: ['_buildImages'],
+                options: {
+                    livereload: true,
+                }
             },
             html: {
                 files: [
                     'app/index.html.hbs'
                 ],
-                tasks: ['_buildHTML']
+                tasks: ['_buildHTML'],
+                options: {
+                    livereload: true,
+                }
             }
+        },
+
+        open: {
+            dev : {
+                path: 'http://localhost:9876/build/dev.html'
+            },
         }
     });
 
@@ -512,17 +512,16 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-neuter');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-ember-templates');
-    grunt.loadNpmTasks('grunt-casperjs');
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-hashres');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-s3');
     grunt.loadNpmTasks('grunt-img');
-    grunt.loadNpmTasks('grunt-qunit-istanbul');
     grunt.loadNpmTasks('grunt-exec');
     grunt.loadNpmTasks('grunt-compile-handlebars');
-
+    grunt.loadNpmTasks('grunt-open');
+    grunt.loadNpmTasks('grunt-karma');
 
     grunt.registerMultiTask('clean', 'Deletes files', function () {
         this.files.forEach(function (file) {
@@ -538,14 +537,13 @@ module.exports = function (grunt) {
      A task to run the application's unit tests via the command line.
      It will headlessy load the test runner page and print the test runner results
      */
-    grunt.registerTask('test', ['_devBuild', 'qunit', 'jshint']);
-    grunt.registerTask('itest', ['_devBuild', 'connect:server', 'casperjs']);
+    grunt.registerTask('test', ['_devBuild', 'karma', 'jshint']);
 
     /*
      Default task. Compiles templates, neuters application code, and begins
      watching for changes.
      */
-    grunt.registerTask('default', ['_devBuild', 'connect', 'watch']);
+    grunt.registerTask('default', ['_devBuild', 'connect', 'open', 'watch']);
 
     /*
      Builds for production.
