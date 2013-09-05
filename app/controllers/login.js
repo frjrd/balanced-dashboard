@@ -3,11 +3,13 @@ Balanced.LoginController = Balanced.ObjectController.extend({
     password: null,
     loginError: false,
     loginResponse: '',
+    showLoading: false,
 
     init: function () {
         var self = this;
         Balanced.Auth.on('signInError', function () {
             self.set('loginError', true);
+            self.set('showLoading', false);
             var response = Balanced.Auth.get('jqxhr');
 
             if (response.status === 401) {
@@ -32,9 +34,14 @@ Balanced.LoginController = Balanced.ObjectController.extend({
         Balanced.Auth.on('signInSuccess', function () {
             self.set('loginError', false);
         });
+        Balanced.Auth.on('signOutSuccess', function () {
+            self.set('showLoading', false);
+            self.set('password', null);
+        });
     },
 
     signIn: function () {
+        this.set('showLoading', true);
         Balanced.Auth.forgetLogin();
         Balanced.Auth.signIn({
             data: {
