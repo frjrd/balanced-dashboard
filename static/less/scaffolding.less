@@ -524,7 +524,7 @@ footer {
   -o-transform:      @string;
 }
 
-#loadingSpinner{
+#loadingSpinner, .loader{
   height:@loadingSpinnerDotSize+0em;
   width:@loadingSpinnerDotSize+0em;
   border-radius:100%;
@@ -551,6 +551,29 @@ footer {
   &:after{
     left:(@loadingSpinnerDotSize*1.15)+0em; 
     background: RGB(213, 43, 30); 
+  }
+}
+
+h1{
+  .loader{
+    margin-top: -10px;
+    margin-left: 10px;
+  }
+}
+
+.loader{
+  margin:0;
+  height:@loadingSpinnerDotSizeSmall+0px;
+  width:@loadingSpinnerDotSizeSmall+0px;
+  .animation(spinSmall, 2s, ease, infinite);
+  &:before, &:after{
+    .animation(spinUpSmall, 2s, ease, infinite);
+  }
+  &:before{
+    left:-(@loadingSpinnerDotSizeSmall*1.15)+0px;
+  }
+  &:after{
+    left:(@loadingSpinnerDotSizeSmall*1.15)+0px;
   }
 }
 
@@ -604,3 +627,52 @@ footer {
 @-o-keyframes spinUp {.loadingSpinnerSpinUp}
 @keyframes spinUp {.loadingSpinnerSpinUp}
 
+.loadingSpinnerSpinSmall() {
+  0%{
+    top:0;
+    .transform(rotate(0deg));
+  }
+  15%{
+    top:-(@loadingSpinnerDotSizeSmall / 2)+0px;
+    .transform(rotate(-180deg));
+  }
+  50%{
+    top:(@loadingSpinnerDotSizeSmall)+0px;
+    .transform(rotate(-180deg));
+  }
+  55%{
+    top:-(@loadingSpinnerDotSizeSmall / 2)+0px;
+    .transform(rotate(-180deg));
+  }
+  100%{
+    top:0;
+    .transform(rotate(-360deg));
+  }
+}
+
+.loadingSpinnerSpinUpSmall() {
+  0%{
+    top:0;
+    .transform(rotate(0deg));
+  }
+  50%{
+    top:(@loadingSpinnerDotSizeSmall*2)+0px;
+    .transform(rotate(-180deg));
+  }
+  100%{
+    top:0;
+    .transform(rotate(-360deg));
+  }
+}
+
+@-webkit-keyframes spinSmall {.loadingSpinnerSpinSmall}
+@-moz-keyframes spinSmall {.loadingSpinnerSpinSmall}
+@-ms-keyframes spinSmall {.loadingSpinnerSpinSmall}
+@-o-keyframes spinSmall {.loadingSpinnerSpinSmall}
+@keyframes spinSmall {.loadingSpinnerSpinSmall}
+
+@-webkit-keyframes spinUpSmall {.loadingSpinnerSpinUpSmall}
+@-moz-keyframes spinUpSmall {.loadingSpinnerSpinUpSmall}
+@-ms-keyframes spinUpSmall {.loadingSpinnerSpinUpSmall}
+@-o-keyframes spinUpSmall {.loadingSpinnerSpinUpSmall}
+@keyframes spinUpSmall {.loadingSpinnerSpinUpSmall}
